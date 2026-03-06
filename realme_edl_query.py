@@ -17,15 +17,14 @@ def check_url(url):
         pass
 
 def main():
-    if len(sys.argv) != 5:
-        print("Usage: python3 script.py <MODEL> <REGION> <VERSION_NAME> <DATE>")
-        print("Example: ~/venv/bin/python realme_edl_query.py RMX3888 CN \"RMX3888_16.0.3.500(CN01)\" 202601241320")
+    if len(sys.argv) != 4:
+        print("Usage: python3 script.py <VERSION_NAME> <REGION> <DATE>")
+        print("Example: ~/venv/bin/python realme_edl_query.py \"RMX3888_16.0.3.500(CN01)\" CN 202601241320")
         return
 
-    MODEL = sys.argv[1]
+    VERSION_NAME = sys.argv[1]
     REGION = sys.argv[2].upper()
-    VERSION_NAME = sys.argv[3]
-    DATE_PREFIX = sys.argv[4]
+    DATE_PREFIX = sys.argv[3]
     
     if len(DATE_PREFIX) != 12:
         print(f"\n❌ Error: Argument 4 (Date) length is {len(DATE_PREFIX)}, expected 12 characters.")
@@ -39,6 +38,7 @@ def main():
         BUCKET, SERVER = "export", "rms01.realme.net"
 
     VERSION_CLEAN = re.sub(r"^RMX\d+_", "", VERSION_NAME).replace("(", "").replace(")", "")
+    MODEL = VERSION_NAME.split("_")[0]
     BASE_URL = f"https://{SERVER}/sw/{MODEL}{BUCKET}_11_{VERSION_CLEAN}_{DATE_PREFIX}"
 
     print(f"Querying for {VERSION_NAME}\n")
