@@ -68,6 +68,7 @@ MQIDAQAB
 
 REGION_CONFIG = {
     "cn": {"host": "component-ota-cn.allawntech.com", "language": "zh-CN", "carrier_id": "10010111", "public_key_version": "1615879139745"},
+    "cn_cmcc": {"host": "component-ota-cn.allawntech.com", "language": "zh-CN", "carrier_id": "10011000", "public_key_version": "1615879139745"},
     "cn_gray": {"host": "component-ota-gray.coloros.com", "language": "zh-CN", "carrier_id": "10010111", "public_key_version": "1615879139745"},
     "eu": {"host": "component-ota-eu.allawnos.com", "language": "en-GB", "carrier_id": "01000100", "public_key_version": "1615897067573"},
     "in": {"host": "component-ota-in.allawnos.com", "language": "en-IN", "carrier_id": "00011011", "public_key_version": "1615896309308"},
@@ -220,10 +221,13 @@ def get_public_key_for_region(region: str, gray: int) -> Tuple[str, Dict]:
     
     if gray == 1 and region == "cn":
         region = "cn_gray"
+    
+    if region == "cn_cmcc":
+        key_region = "cn"
         
     public_key = PUBLIC_KEYS[key_region]
     
-    if region in ["cn", "cn_gray", "eu", "in"]:
+    if region in ["cn", "cn_cmcc", "cn_gray", "eu", "in"]:
         config = REGION_CONFIG[region]
     else:
         config = REGION_CONFIG["sg_host"].copy()
