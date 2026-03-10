@@ -21,6 +21,7 @@ Current scripts:
 - `sota_query.py`      → SOTA (Software OTA / modular APK) query (CN only)
 - `iot_query.py`       → legacy & IoT server query (CN only)
 - `downgrade_query.py` → query official downgrade packages (CN only)
+- `realme_edl_query.py` → query official EDL packages for Realme
 
 ## `C16_transer.py`
 
@@ -50,7 +51,6 @@ Main advanced OTA query tool — supports full ROM, delta updates, gray channel,
 - Modes: `manual`, `client_auto`, `server_auto`, `taste`
 - `--anti 1` bypass for ColorOS 16 restricted models
 - Delta OTA via `--components`
-- Legacy special server fallback (`--special 1`)
 - Google Server Firmware Query (`--fingerprint`)
 
 ### Dependencies
@@ -71,11 +71,37 @@ python tomboy_pro.py <OTA_PREFIX> <REGION> [options]
 
 **Positional**  
 - `<OTA_PREFIX>`     `PJX110` / `PJX110_11.A` / `PJX110_11.C.36_...`  
-- `<REGION>`         `cn` `eu` `in` `sg` `ru` `tr` `th` `gl` `tw` `my` `vn` `id`
+- `<REGION>`         `cn` `cn_cmcc` `eu` `in` `sg` `ru` `tr` `th` `gl` `tw` `my` `vn` `id`
 
-**Popular flags** (see table in previous version)
+**Popular flags**
+| Flag              | Meaning                                          | Example / Note                       |
+|-------------------|--------------------------------------------------|--------------------------------------|
+| `--model`         | Force model                                      | `--model PJX110`                     |
+| `--gray 1`        | Test channel (mainly Realme, few OPlus)          |                                      |
+| `--mode taste`    | Often used with `--anti 1`                       |                                      |
+| `--genshin 1/2`   | Genshin edition (YS / Ovt suffix)                |                                      |
+| `--pre 1`         | Preview build (needs `--guid`)                   |                                      |
+| `--guid 64hex`    | 64-char device GUID                              | Required for pre/taste               |
+| `--components`    | Delta query (name:fullversion,...)               | `--components System:PJX110_11...`   |
+| `--anti 1`        | Bypass ColorOS 16 query restriction (~Oct 2025)  | Usually + `--mode taste`             |
+| `--fingerprint`   | Use Google OTA Server instead                    | OxygenOS / US variant useful         |
 
-**Examples** (see previous examples)
+**Examples**
+```bash
+# Basic CN query
+python tomboy_pro.py PJX110_11.A cn
+
+# Anti-query bypass for ColorOS 16
+python tomboy_pro.py PLA110_11.A cn --anti 1
+
+# Delta OTA
+python tomboy_pro.py PJX110_11.C.36_1360_20250814 cn --components System:PJX110_11.C.35_...
+
+# Preview with GUID
+python tomboy_pro.py PJX110_11.A cn --pre 1 --guid 0123456789abcdef... (64 chars)
+```
+
+**Note**: Get Delta OTA is pretty special, you may get the components info by run `getprop | grep ro.oplus.version | sed -E 's/\[ro\.oplus\.version\.([^]]+)\]: \[([^]]+)\]/\1:\2/g' | tr '\n' ',' | sed 's/,$//' | sed 's/base/system_vendor/g'` in your device, and make sure using the full OTA version and the same version as your component
 
 ## `opex_query.py`
 
@@ -87,7 +113,7 @@ python opex_query.py <FULL_OTA_VERSION> --info <OS_VERSION>,<BRAND>
 
 # Examples
 python opex_query.py PJZ110_11.C.84_1840_202601060309 --info 16,oneplus
-python opex_query.py RMX5200_11.A.63_...               --info 16,realme
+python opex_query.py RMX5200_11.A.63_... --info 16,realme
 ```
 
 **Note**: Requires complete OTA version string (at least 3 `_` segments).
@@ -155,7 +181,6 @@ python downgrade_query.py PKX110_11.C 24821 a1b2c3e4 498A44DF1BEC4EB19FBCB3A870F
 Fetch Info:
 • Link: https://...
 • Changelog: ...
-• Published Time: 2025-08-12 14:30:00
 • Version: ColorOS 15.0 (Android 15)
 • Ota Version: PKX110_11.C.12_...
 • MD5: abcdef123456...
@@ -178,7 +203,6 @@ python downgrade_query.py PKX110_11.C 24821
 Fetch Info:
 • Link: https://...
 • Changelog: ...
-• Published Time: 2025-08-12 14:30:00
 • Version: ColorOS 15.0 (Android 15)
 • Ota Version: PKX110_11.C.12_...
 • MD5: abcdef123456...
