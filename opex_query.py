@@ -119,24 +119,15 @@ def build_headers(ota_version: str, model: str, os_version: str, brand: str,
         "language": config["language"],
         "newLanguage": config["language"],
         "androidVersion": "unknown",
-        "romVersion": "unknown",
-        "infVersion": "1",
-        "otaVersion": ota_version,
-        "model": model,
-        "mode": "0",
         "nvCarrier": config["carrier_id"],
-        "pipelineKey": "ALLNET",
-        "operator": "ALLNET",
-        "companyId": "",
         "deviceId": device_id,
-        "Content-Type": "application/json; charset=utf-8",
-        "User-Agent": "okhttp/5.3.2",
-        "colorOSVersion": os_version,
         "osVersion": os_version,
         "productName": model,
         "brand": brand,
         "queryMode": "0",
-        "version": "1"
+        "version": "1",
+        "Content-Type": "application/json; charset=utf-8",
+        "User-Agent": "okhttp/5.3.2"
     }
     expire_time = str(time.time_ns() + 10**9 * 60 * 60 * 24)
     headers["protectedKey"] = json.dumps({
