@@ -180,8 +180,8 @@ def main():
         print_usage()
         sys.exit(1)
 
-    version_prefix = args[0]
-    region = args[1]
+    version_prefix = args[0].upper()
+    region = args[1].lower()
 
     # Validate exactly two underscores in the original prefix
     if version_prefix.count('_') != 2:
