@@ -75,46 +75,31 @@ def build_special_request_data(ota_version: str, model: str) -> Tuple[Dict, Dict
         'newLanguage': lang,
         'romVersion': rom_version,
         'otaVersion': ota_version,
-        'androidVersion': 'Android10.0',
-        'colorOSVersion': 'ColorOS7',
+        'androidVersion': 'unknown',
+        'colorOSVersion': 'unknown',
         'model': model,
         'infVersion': '1',
-        'operator': 'unknown',
         'nvCarrier': '10010111',
-        'uRegion': 'CN',
-        'trackRegion': 'CN',
-        'imei': '000000000000000',
-        'imei1': '000000000000000',
         'deviceId': "0" * 64,
         'mode': 'client_auto',
         'version': '1',
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'User-Agent': 'NULL'
+        'Content-Type': 'application/json'
     }
 
     body = {
         'language': lang,
         'romVersion': rom_version,
         'otaVersion': ota_version,
-        'androidVersion': 'Android10.0',
-        'colorOSVersion': 'ColorOS7',
         'model': model,
         'productName': model,
-        'operator': 'unknown',
-        'uRegion': 'CN',
-        'trackRegion': 'CN',
-        'imei': '000000000000000',
-        'imei1': '000000000000000',
+        'imei': '0' * 15,
         'mode': '0',
-        'registrationId': 'unknown',
         'deviceId': "0" * 64,
         'version': '2',
         'type': '1',
-        'otaPrefix': ota_prefix,
         'isRealme': '1' if 'RMX' in model else '0',
-        'time': str(int(time.time() * 1000)),
-        'canCheckSelf': '0'
+        'time': str(int(time.time() * 1000))
     }
     return headers, body
 
