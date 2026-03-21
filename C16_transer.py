@@ -12,19 +12,6 @@ from urllib.parse import parse_qs, urlparse
 def android_request(url, method='GET', data=None, headers=None, allow_redirects=False, timeout=30, max_retries=3):
     
     base_headers = {
-        'User-Agent': 'Mozilla/5.0 (Linux; Android 13; SM-G998B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Cache-Control': 'max-age=0',
-        'sec-ch-ua': '"Chromium";v="112", "Google Chrome";v="112", "Not:A-Brand";v="99"',
-        'sec-ch-ua-mobile': '?1',
-        'sec-ch-ua-platform': '"Android"',
         'userId': "oplus-ota|00000001",
         'Range': "bytes=0-",
     }
@@ -66,7 +53,7 @@ def android_request(url, method='GET', data=None, headers=None, allow_redirects=
 def print_request_info(url, method, headers, data, response):
     
     print("=" * 50)
-    print("Copyright (C) 2025 Jerry Tse")
+    print("Copyright (C) 2025-2026 Jerry Tse")
     print("=" * 50)
     print(f"URL: {url}")
     
