@@ -489,11 +489,52 @@ def display_result(result: QueryResult):
         else:
             print("\nUnknown Error")
 
-def auto_complete_query(base_ota_prefix: str, config: QueryConfig) -> None:
+def auto_complete_query(base_ota_prefix: str, config: QueryConfig, graynew_mode: bool = False) -> None:
     suffixes = ["_11.A", "_11.C", "_11.F", "_11.H", "_11.J"]
     last_success_fake = None
-    
-    if config.anti == 1: config.mode = "taste"
+
+    if graynew_mode:
+        for suffix in suffixes:
+            candidate = base_ota_prefix + suffix
+            print(f"\nQuerying for {candidate}")
+
+            proc_ota, proc_model = process_ota_version(
+                candidate, config.region, config.genshin, config.pre,
+                config.model if config.has_custom_model else None
+            )
+
+            taste_cfg = QueryConfig(**config.__dict__)
+            taste_cfg.ota_version = proc_ota
+            taste_cfg.model = proc_model
+            taste_cfg.gray = 0
+            taste_cfg.mode = "taste"
+
+            result_taste = query_update(taste_cfg)
+
+            new_ota_version = result_taste.data.get("ota_version") if result_taste.success and result_taste.data else None
+            
+            if not new_ota_version or new_ota_version == "N/A":
+                print("\nNo Result")
+                continue
+
+            final_ota, final_model = process_ota_version(
+                new_ota_version, config.region, "0", "0",
+                config.model if config.has_custom_model else None
+            )
+            
+            final_cfg = QueryConfig(**config.__dict__)
+            final_cfg.ota_version = final_ota
+            final_cfg.model = final_model
+            final_cfg.gray = 1
+            final_cfg.genshin = "0"
+            final_cfg.pre = "0"
+
+            result_final = query_update(final_cfg)
+            display_result(result_final)
+        return
+        
+    if config.anti == 1:
+        config.mode = "taste"
 
     for suffix in suffixes:
         display_ota = base_ota_prefix + suffix
@@ -587,52 +628,9 @@ def main():
         )
 
         if args.graynew == 1:
-            taste_config = QueryConfig(
-                ota_version=args.ota_prefix, model=args.model or "unknown", region=args.region,
-                gray=args.gray, mode="taste", guid=args.guid, components_input=args.components,
-                anti=args.anti, has_custom_model=bool(args.model), genshin=args.genshin, pre=args.pre,
-                custom_language=args.custom_language,
-                nvid=args.nvid
-            )
-            processed_ota, processed_model = process_ota_version(
-                taste_config.ota_version, args.region, args.genshin, args.pre, args.model
-            )
-            taste_config.ota_version = processed_ota
-            taste_config.model = processed_model
-
-            result_taste = query_update(taste_config)
-            if not result_taste.success or not result_taste.data:
-                sys.exit(f"Failed to get OTA version")
-
-            new_ota_version = result_taste.data.get("ota_version", "N/A")
-            if new_ota_version == "N/A" or not new_ota_version:
-                sys.exit("No OTA version found in response")
-
-            final_config = QueryConfig(
-                ota_version=new_ota_version, model=args.model or "unknown", region=args.region,
-                gray=1, mode=args.mode, guid=args.guid, components_input=args.components,
-                anti=args.anti, has_custom_model=bool(args.model), genshin="0", pre="0",
-                custom_language=args.custom_language,
-                nvid=args.nvid
-            )
-            processed_ota2, processed_model2 = process_ota_version(
-                final_config.ota_version, args.region, final_config.genshin, final_config.pre, args.model
-            )
-            final_config.ota_version = processed_ota2
-            final_config.model = processed_model2
-
-            print(f"Querying {args.region.upper()} update")
-            print(f"Device Model: {final_config.model}")
-            print(f"Full OTA Version: {final_config.ota_version}")
-            if final_config.guid == "0"*64:
-                print("Using GUID: Default device ID")
-            else:
-                print(f"Using GUID: {final_config.guid[:16]}")
-
-            result_final = query_update(final_config)
-            display_result(result_final)
+            auto_complete_query(args.ota_prefix, config, graynew_mode=True)
             return
-
+        
         ota_upper = args.ota_prefix.upper().replace("OVT", "Ovt")
         processed_ota, processed_model = process_ota_version(
             ota_upper, args.region, args.genshin, args.pre, args.model
