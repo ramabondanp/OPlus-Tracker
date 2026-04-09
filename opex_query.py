@@ -103,13 +103,13 @@ def aes_ctr_decrypt(ciphertext: bytes, key: bytes, iv: bytes) -> bytes:
 
 # --- Request Construction & Execution ---
 
-def build_headers(ota_version: str, model: str, os_version: str, brand: str, 
+def build_headers(ota_version: str, model: str, android_version: str, os_version: str, brand: str, 
                   device_id: str, protected_key: str) -> Dict:
     config = OPEX_CONFIG_CN
     headers = {
         "language": config["language"],
         "newLanguage": config["language"],
-        "androidVersion": "unknown",
+        "androidVersion": android_version,
         "nvCarrier": config["carrier_id"],
         "deviceId": device_id,
         "osVersion": os_version,
@@ -130,7 +130,7 @@ def build_headers(ota_version: str, model: str, os_version: str, brand: str,
     })
     return headers
 
-def query_opex(ota_version: str, os_version: str, brand: str) -> None:
+def query_opex(ota_version: str, os_version: str, brand: str, android_version: str) -> None:
     model = extract_model_from_ota_version(ota_version)
     
     # Cosmetic: Add space between ColorOS and version number
@@ -152,7 +152,7 @@ def query_opex(ota_version: str, os_version: str, brand: str) -> None:
             device_id = generate_random_string(64).lower()
             protected_key_str = generate_protected_key(aes_key, OPEX_PUBLIC_KEY_CN)
             
-            headers = build_headers(ota_version, model, os_version, brand, device_id, protected_key_str)
+            headers = build_headers(ota_version, model, android_version, os_version, brand, device_id, protected_key_str)
             raw_payload = {
                 "mode": "0",
                 "time": int(time.time() * 1000),
@@ -271,11 +271,12 @@ def main():
     os_ver_raw, brand_raw = parts
     os_version = parse_os_version(os_ver_raw)
     brand = parse_brand(brand_raw)
+    android_version = "Android" + os_ver_raw
     
     if args.ota_version.count('_') < 3:
         print("\nWarning: Opex query typically requires a complete OTA version string.")
     
-    query_opex(args.ota_version, os_version, brand)
+    query_opex(args.ota_version, os_version, brand, android_version)
 
 if __name__ == "__main__":
     main()
