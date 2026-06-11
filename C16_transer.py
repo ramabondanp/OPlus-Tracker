@@ -46,30 +46,27 @@ def android_request(url, method='GET', data=None, headers=None, allow_redirects=
         try:
             response = requests.get(url, headers=base_headers, timeout=timeout, allow_redirects=allow_redirects)
                 
-            print_request_info(url, method, base_headers, data, response)
+            print_request_info(url, response)
             
             return response
             
-        except requests.exceptions.Timeout as e:
+        except requests.exceptions.Timeout:
             if attempt < max_retries - 1:
                 continue
-            else:
-                print(f"❌ Timeout")
-                return None
+            print(f"❌ Timeout")
+            return None
                 
-        except requests.exceptions.ConnectionError as e:
+        except requests.exceptions.ConnectionError:
             if attempt < max_retries - 1:
                 continue
-            else:
-                print(f"❌ Error")
-                return None
+            print(f"❌ Error")
+            return None
                 
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             if attempt < max_retries - 1:
                 continue
-            else:
-                print(f"❌ Failed")
-                return None
+            print(f"❌ Failed")
+            return None
     
     return None
 
@@ -118,42 +115,36 @@ def android_pre_request(url, method='GET', data=None, headers=None, allow_redire
         try:
             response = requests.get(url, headers=base_headers, timeout=timeout, allow_redirects=allow_redirects)
                 
-            print_request_info(url, method, base_headers, data, response)
+            print_request_info(url, response)
             
             return response
             
-        except requests.exceptions.Timeout as e:
+        except requests.exceptions.Timeout:
             if attempt < max_retries - 1:
                 continue
-            else:
-                print(f"❌ Timeout")
-                return None
+            print(f"❌ Timeout")
+            return None
                 
-        except requests.exceptions.ConnectionError as e:
+        except requests.exceptions.ConnectionError:
             if attempt < max_retries - 1:
                 continue
-            else:
-                print(f"❌ Error")
-                return None
+            print(f"❌ Error")
+            return None
                 
-        except requests.exceptions.RequestException as e:
+        except requests.exceptions.RequestException:
             if attempt < max_retries - 1:
                 continue
-            else:
-                print(f"❌ Failed")
-                return None
+            print(f"❌ Failed")
+            return None
     
     return None
 
-def print_request_info(url, method, headers, data, response):
+def print_request_info(url, response):
     
     print("=" * 50)
     print("Copyright (C) 2025-2026 Jerry Tse")
     print("=" * 50)
     print(f"URL: {url}")
-    
-    if response.status_code in [301, 302, 303, 307, 308]:
-        redirect_url = response.headers.get('Location')
 
 def parse_expires_time(url):
 
@@ -170,6 +161,8 @@ def parse_expires_time(url):
             expires_str = query_params.get('x-oss-expires', [None])[0]
             if not expires_str:
                 return None
+        else:
+            return None
 
         expires_timestamp = int(expires_str)
         expires_time = datetime.fromtimestamp(expires_timestamp)
