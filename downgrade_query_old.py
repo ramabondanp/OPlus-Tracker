@@ -184,7 +184,10 @@ Example:
     )
     args = parser.parse_args()
 
-    result = query_downgrade(args.ota_prefix, args.prj_num, args.cmcc)
+    try:
+        result = query_downgrade(args.ota_prefix, args.prj_num, args.cmcc)
+    except ValueError as e:
+        parser.error(str(e))
     print(f"Querying downgrade for {result['ota_version']}\n")
     if result["packages"]:
         pkg_list = result["packages"]
