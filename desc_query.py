@@ -13,7 +13,7 @@ import string
 import sys
 import time
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple
 
 import requests
 from cryptography.hazmat.backends import default_backend

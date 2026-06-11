@@ -86,13 +86,7 @@ Example:
     parser.add_argument('url', help='URL to resolve')
     args = parser.parse_args()
 
-    url = args.url
-    
-    if not url:
-        print("Error: link cannot be empty", file=sys.stderr)
-        sys.exit(1)
-
-    analyze_opex_from_url(url)
+    analyze_opex_from_url(args.url)
     print("\nAnalysis completed!")
 
 if __name__ == '__main__':
