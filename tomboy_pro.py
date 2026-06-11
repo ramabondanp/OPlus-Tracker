@@ -229,21 +229,19 @@ def process_ota_version(
         model = base_model
 
     if genshin == "1" and "YS" not in ota_prefix:
-        model = base_model
-        ota_prefix = ota_prefix.replace(model, model + "YS")
+        ota_prefix = ota_prefix.replace(base_model, base_model + "YS")
     elif genshin == "2" and "Ovt" not in ota_prefix:
-        model = base_model
-        ota_prefix = ota_prefix.replace(model, model + "Ovt")
+        ota_prefix = ota_prefix.replace(base_model, base_model + "Ovt")
     elif pre == "1" and "PRE" not in ota_prefix:
-        model = base_model
-        ota_prefix = ota_prefix.replace(model, model + "PRE")
+        ota_prefix = ota_prefix.replace(base_model, base_model + "PRE")
 
-    if "YS" in ota_prefix:
-        model = base_model.replace("YS", "")
-    elif "Ovt" in ota_prefix:
-        model = base_model.replace("Ovt", "")
-    elif "PRE" in ota_prefix:
-        model = base_model.replace("PRE", "")
+    if not custom_model:
+        if "YS" in ota_prefix:
+            model = base_model.replace("YS", "")
+        elif "Ovt" in ota_prefix:
+            model = base_model.replace("Ovt", "")
+        elif "PRE" in ota_prefix:
+            model = base_model.replace("PRE", "")
 
     ota_version = f"{ota_prefix}.01_0001_197001010000" if len(parts) < 3 else ota_prefix
     return ota_version, model
