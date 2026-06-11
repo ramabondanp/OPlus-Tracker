@@ -57,7 +57,7 @@ def get_cn_master_list() -> dict:
         
         whitelist = requests.get(r_json['data']['downloadUrl'], timeout=10).json()
         return {device["id"]: device["name"] for device in whitelist.get("compatWhiteList", [])}
-    except:
+    except Exception:
         return {}
 
 def get_devices(region: str):
