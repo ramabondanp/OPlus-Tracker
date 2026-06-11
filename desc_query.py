@@ -217,8 +217,9 @@ def main():
 
     if panel_url:
         print(f"· Changelog: {panel_url}")
-    else:
-        print("Changelog Not found")
+        return 0
+    print("Changelog Not found")
+    return 1
 
 if __name__ == "__main__":
     try:
